@@ -1,0 +1,114 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background: linear-gradient(135deg, #2f2f2f 0%, #5a189a 100%); /* Градиент как на скриншоте */
+    color: white;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    padding: 0;
+}
+
+
+.sidebar {
+    width: 300px; /* Увеличить ширину */
+    background: #1e1e1e;
+    padding: 15px;
+    border-right: 1px solid #444;
+}
+
+.search-container {
+    margin-bottom: 20px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.sidebar ul li {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.sidebar ul li span {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.sidebar ul li small {
+    color: #777;
+}
+
+
+#messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background: #1c1c1c;
+    border-top: 1px solid #444;
+}
+
+.message {
+    margin: 5px 0;
+    padding: 8px 15px;
+    border-radius: 15px;
+    max-width: 70%;
+}
+
+.incoming { /* Для входящих сообщений */
+    background: #2d2d2d;
+    margin-left: 0;
+}
+
+.outgoing { /* Для исходящих сообщений */
+    background: #666;
+    margin-left: auto;
+    text-align: right;
+}
+
+.message b,
+.message small {
+    display: block;
+}
+
+.message small {
+    font-size: 0.8em;
+    color: #777;
+    margin-top: 3px;
+}
+
+.chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-input {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: #2a2a2a;
+    border-top: 1px solid #444;
+}
+
+.chat-input input {
+    border-radius: 25px;
+    padding-left: 15px;
+}
+
+.chat-input button {
+    width: 40px;
+    height: 40px;
+    background: #5a189a;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    margin-left: 10px;
+}
