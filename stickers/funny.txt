@@ -1,0 +1,1 @@
+Playstation <marquee behavior="scroll" direction="left" scrolldelay="50" scrollamount="15"> <img src="https://otvet.imgsmail.ru/download/ddd48b1b17e354f8b0acc1a76a91fdf9_i-322.jpg" alt="альтернативный текст"> ✨ </marquee> 

@@ -23,6 +23,10 @@ class Message(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', backref='messages')
 
+class Sticker(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    src = db.Column(db.Text, nullable=False)
+
 # --- Роуты ---
 @app.route('/')
 def index():
