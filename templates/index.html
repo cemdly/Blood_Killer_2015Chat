@@ -34,22 +34,38 @@
 </head>
 <body>
     <div class="container">
-        <div class="sidebar">
-            <h3>Личные чаты</h3>
-            <ul>
-                <li>Игрок 1</li>
-                <li>Игрок 2</li>
-            </ul>
+    <div class="sidebar">
+        <div class="search-container">
+            <input type="text" placeholder="Поиск" style="width: 100%; padding: 10px; background: #4a4a4a; border: none;">
         </div>
-        <div class="chat">
+        <ul>
+            <li>
+                <img src="avatar1.jpg" alt="Avatar" class="avatar"> <!-- Добавьте аватар -->
+                <span>Fallen</span>
+                <small>Сейчас</small>
+            </li>
+            <li>
+                <img src="avatar2.jpg" alt="Avatar" class="avatar">
+                <span>УбийцаКрови2003</span>
+                <small>12 мин. назад</small>
+            </li>
+        </ul>
+
+    </div>
+            <div class="chat">
             <div id="messages">
                 {% for msg in messages %}
-                    <div class="message"><b>{{ msg.user.username }}</b>: {{ msg.content }}</div>
+                    <div class="message {{ 'outgoing' if msg.user.is_current else 'incoming' }}">
+                        <b>{{ msg.user.username }}</b>: {{ msg.content }}
+                        <small>{{ msg.time }}</small> <!-- Добавьте время -->
+                    </div>
                 {% endfor %}
             </div>
             <input type="text" id="messageInput" placeholder="Введите сообщение...">
         </div>
-    </div>
+    
+
+
 
     <!-- Socket.IO -->
     <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script> 
