@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: sans-serif;
-    background: linear-gradient(135deg, #2f2f2f 0%, #5a189a 100%); /* Градиент как на скриншоте */
+    background: linear-gradient(135deg, #2f2f2f 0%, #5a189a 100%); /* Градиент из примера [[1]] */
     color: white;
 }
 
