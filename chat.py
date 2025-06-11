@@ -27,44 +27,50 @@ class Sticker(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     src = db.Column(db.Text, nullable=False)
 
-# --- Роуты ---
-@app.route('/')
-def index():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    user = User.query.get(session['user_id'])
-    messages = Message.query.all()
-    return render_template('index.html', user=user, messages=messages)
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    error_username = None
+    error_password = None
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
         user = User.query.filter_by(username=username).first()
 
+        if not user or user.password != password:
+            error_username = "Неверное имя пользователя или пароль"
+            error_password = "Неверное имя пользователя или пароль"
+
         if user and user.password == password:
             session['user_id'] = user.id
             return redirect(url_for('index'))
-        else:
-            return "Неправильный логин или пароль", 401
-    return render_template('login.html')
+
+    return render_template('login.html', register=False, invalid_username=error_username, invalid_password=error_password)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    error_username = None
+    error_password = None
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
         if User.query.filter_by(username=username).first():
-            return "Пользователь уже существует", 400
+            error_username = "Пользователь уже существует"
 
-        new_user = User(username=username, password=password)
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect(url_for('login'))
-    return render_template('login.html', register=True)
+        if len(password) < 6:
+            error_password = "Пароль должен быть не короче 6 символов"
+
+        if not error_username and not error_password:
+            new_user = User(username=username, password=password)
+            db.session.add(new_user)
+            db.session.commit()
+            return redirect(url_for('login'))
+
+    return render_template('login.html', register=True, invalid_username=error_username, invalid_password=error_password)
 
 # --- Socket.IO ---
 @socketio.on('send_message')
