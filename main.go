@@ -28,11 +28,12 @@ func main() {
 
 	http.HandleFunc("/ws", handlers.HandleConnections)
 	http.HandleFunc("/upload", handlers.HandleImageUpload)
+	http.HandleFunc("/upload-file", handlers.HandleFileUpload)
 	http.HandleFunc("/uploads/", handlers.ServeUploadedFiles)
 
 	config.ServeFrontend()
 
 	//port := config.GetPort()
 	log.Printf("Server started")
-	log.Fatal(http.ListenAndServe("0.0.0.0:2773", nil))
+	log.Fatal(http.ListenAndServe("0.0.0.0:6868", nil))
 }

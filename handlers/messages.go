@@ -45,10 +45,27 @@ func readClientMessage(ws *websocket.Conn) (models.ClientMessage, error) {
 func handleMessage(nickname string, msg models.ClientMessage) error {
 	var err error
 
-	// Определяем тип сообщения и сохраняем соответственно
-	if msg.Type == "image" && msg.ImageURL != "" {
-		err = storage.StorageRepo.SaveImageMessage(nickname, msg.Text, msg.ImageURL)
-	} else {
+	switch msg.Type {
+	case "image":
+		if msg.ImageURL != "" {
+			err = storage.StorageRepo.SaveImageMessage(nickname, msg.Text, msg.ImageURL)
+		} else {
+			err = storage.StorageRepo.SaveMessage(nickname, msg.Text)
+		}
+	case "file":
+		if msg.FileURL != "" {
+			err = storage.StorageRepo.SaveFileMessage(
+				nickname,
+				msg.Text,
+				msg.FileURL,
+				msg.FileName,
+				msg.FileSize,
+				msg.MimeType,
+			)
+		} else {
+			err = storage.StorageRepo.SaveMessage(nickname, msg.Text)
+		}
+	default:
 		err = storage.StorageRepo.SaveMessage(nickname, msg.Text)
 	}
 
@@ -56,7 +73,6 @@ func handleMessage(nickname string, msg models.ClientMessage) error {
 		return err
 	}
 
-	// Создаем сообщение для broadcast
 	broadcastMsg := models.Message{
 		Nickname: nickname,
 		Text:     msg.Text,
@@ -66,6 +82,12 @@ func handleMessage(nickname string, msg models.ClientMessage) error {
 
 	if msg.Type == "image" {
 		broadcastMsg.ImageURL = msg.ImageURL
+	}
+	if msg.Type == "file" {
+		broadcastMsg.FileURL = msg.FileURL
+		broadcastMsg.FileName = msg.FileName
+		broadcastMsg.FileSize = msg.FileSize
+		broadcastMsg.MimeType = msg.MimeType
 	}
 
 	config.Broadcast <- broadcastMsg

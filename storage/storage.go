@@ -47,6 +47,10 @@ func createTables(db *sql.DB) error {
             text TEXT NOT NULL,
             image_url TEXT,
             message_type TEXT NOT NULL DEFAULT 'text',
+            file_url TEXT,
+            file_name TEXT,
+            file_size BIGINT,
+            mime_type TEXT,
             timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW()
         )`)
 	return err
@@ -66,6 +70,13 @@ func (s *Storage) SaveImageMessage(nickname, text, imageURL string) error {
 	return err
 }
 
+func (s *Storage) SaveFileMessage(nickname, text, fileURL, fileName string, fileSize int64, mimeType string) error {
+	_, err := s.db.Exec(
+		"INSERT INTO messages (nickname, text, file_url, file_name, file_size, mime_type, message_type) VALUES ($1, $2, $3, $4, $5, $6, 'file')",
+		nickname, text, fileURL, fileName, fileSize, mimeType)
+	return err
+}
+
 func (s *Storage) GetLastMessages(limit int) ([]models.Message, error) {
 	rows, err := s.db.Query(`
         SELECT 
@@ -73,6 +84,10 @@ func (s *Storage) GetLastMessages(limit int) ([]models.Message, error) {
             text, 
             image_url,
             message_type,
+            file_url,
+            file_name,
+            file_size,
+            mime_type,
             TO_CHAR(timestamp AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS time
         FROM messages 
         ORDER BY timestamp DESC 
@@ -86,12 +101,28 @@ func (s *Storage) GetLastMessages(limit int) ([]models.Message, error) {
 	for rows.Next() {
 		var m models.Message
 		var imageURL sql.NullString
-		if err := rows.Scan(&m.Nickname, &m.Text, &imageURL, &m.Type, &m.Time); err != nil {
+		var fileURL sql.NullString
+		var fileName sql.NullString
+		var fileSize sql.NullInt64
+		var mimeType sql.NullString
+		if err := rows.Scan(&m.Nickname, &m.Text, &imageURL, &m.Type, &fileURL, &fileName, &fileSize, &mimeType, &m.Time); err != nil {
 			log.Printf("Scan error: %v", err)
 			continue
 		}
 		if imageURL.Valid {
 			m.ImageURL = imageURL.String
+		}
+		if fileURL.Valid {
+			m.FileURL = fileURL.String
+		}
+		if fileName.Valid {
+			m.FileName = fileName.String
+		}
+		if fileSize.Valid {
+			m.FileSize = fileSize.Int64
+		}
+		if mimeType.Valid {
+			m.MimeType = mimeType.String
 		}
 		messages = append(messages, m)
 	}

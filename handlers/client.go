@@ -19,12 +19,14 @@ func getNickname(r *http.Request) string {
 	}
 
 	if nickname := r.URL.Query().Get("nickname"); nickname != "" {
+
 		if !isNickTaken(nickname) {
 			return nickname
 		} else {
 			return nickname + string(digits)
 		}
 	}
+
 	return getRandNickname()
 }
 
@@ -34,7 +36,7 @@ func getRandNickname() string {
 	for i := range digits {
 		digits[i] = byte(rand.Intn(10)) + '0'
 	}
-	randNick := "Kidder" + string(digits)
+	randNick := "новый пользователь чата" + string(digits)
 
 	return randNick
 }
@@ -46,6 +48,10 @@ func isNickTaken(value string) bool {
 		}
 	}
 	return false
+}
+
+func isNickAdmin(value string) bool {
+	return value == "Система"
 }
 
 func registerClient(ws *websocket.Conn, nickname string) {
